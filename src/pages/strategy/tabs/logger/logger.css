@@ -1,0 +1,82 @@
+.tab_logger {
+	width:680px;
+}
+
+/* TYPE FILTERS
+--------------------------------*/
+
+.tab_logger .type_filter {
+  margin-right: 10px;
+}
+
+.tab_logger .filter_label {
+  pointer-events: none;
+}
+
+/* CLEAR LOGS
+--------------------------------*/
+.tab_logger .clear_logs {
+  width: 140px;
+  height: 20px;
+  line-height: 20px;
+  font-weight: bold;
+  font-size: 12px;
+  text-align: center;
+  border-radius: 7px;
+  float: right;
+  background-color: #369;
+  color: #fff;
+}
+
+/* PAGINATION
+--------------------------------*/
+
+.tab_logger .page_panel {
+  width: 700px;
+  margin: 0px 0px 0px 0px;
+  padding: 5px 10px 0px;
+  border-bottom: 1px solid #369;
+}
+
+.tab_logger .pagination {
+  margin: 0px;
+}
+
+/* ERRORS
+--------------------------------*/
+
+.tab_logger .log_entry .data {
+  white-space: pre;
+  display: none;
+}
+.tab_logger .log_entry .data hr {
+  margin-bottom: 5px !important;
+  margin-top: 5px !important;
+  border-top: 1px solid #fff !important;
+}
+
+.tab_logger .log_entry {
+  border-radius: 8px;
+  margin: 0px 0px 4px 0px;
+  padding: 2px 10px; 
+}
+
+.tab_logger .log_entry .context {
+  float: right;
+}
+
+/* DATE SEPARATOR
+--------------------------------*/
+
+.tab_logger .labelled_rule {
+  width: 100%;
+  text-align: center;
+  border-bottom: 1px solid #000;
+  line-height: 0.1em;
+  margin: 10px 0 20px;
+}
+
+.tab_logger .labelled_rule .date {
+  background: #fff;
+  padding: 0 10px;
+}

@@ -876,6 +876,22 @@ Uses Dexie.js third-party plugin on the assets directory
 				.then (callbackSucc || function(){})
 				.catch(callbackFail || function(e){console.error(e.stack);});
 		},
+
+		count_log_entries :function (typesToShow) {
+			return this.con.logs.where('type').anyOf(typesToShow).count();
+		},
+
+		get_log_entries :function ({ pageNumber, itemsPerPage, typesToShow }) {
+			return this.con.logs
+				.where('type').anyOf(typesToShow)
+				.offset((pageNumber - 1) * itemsPerPage).limit(itemsPerPage)
+				.reverse()
+				.sortBy('timestamp');
+		},
+
+		delete_log_entries :function () {
+			return this.con.logs.clear();
+		},
 		
 	};
 	

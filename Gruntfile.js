@@ -217,6 +217,8 @@ module.exports = function(grunt) {
 								"library/modules/QuestSync/Sync.js",
 								"library/modules/QuestSync/Background.js",
 								"library/modules/Database.js",
+								"library/modules/Log/Log.js",
+								"library/modules/Log/Background.js",
 								"library/modules/ImageExport.js",
 								"library/modules/Master.js",
 								"library/modules/RemodelDb.js",
@@ -244,6 +246,9 @@ module.exports = function(grunt) {
 									"library/modules/Master.js",
 									"library/modules/Meta.js",
 									"library/modules/Translation.js",
+									"library/modules/Log/Log.js",
+									"library/modules/Log/Messaging.js",
+									"library/modules/Log/ContentScript.js",
 									"library/injections/dmm_takeover.js",
 									"library/injections/dmm.js"
 								],

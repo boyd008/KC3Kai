@@ -401,6 +401,13 @@
 						self.saveFile(filename, exportData, "text/csv");
 					});
 			});
+
+			$(".tab_profile .export_json_logs").on("click", () => {
+				KC3Database.con.logs.orderBy('timestamp').toArray().then((data) => {
+					const filename = self.makeFilename("ErrorLog", "json");
+					self.saveFile(filename, JSON.stringify(data), "text/json");
+				});
+			});
 			
 			
 			// Clear Quick Data

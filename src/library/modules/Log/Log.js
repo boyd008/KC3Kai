@@ -22,6 +22,8 @@
   Log.warn = (message, ...data) => { return KC3Log.logMessage('warn', message, data); };
   Log.log = (message, ...data) => { return KC3Log.logMessage('log', message, data); };
   Log.info = (message, ...data) => { return KC3Log.logMessage('info', message, data); };
+  // console.debug() is an alias for console.log()
+  Log.debug = (message, ...data) => { return KC3Log.logMessage('log', message, data); };
 
   // ----------------------------------------------------------------------- //
   // ------------------------[ INTERNAL METHODS ]--------------------------- //
@@ -74,10 +76,10 @@
   // ---------------------------[ GLOBAL INIT ]----------------------------- //
 
   // Override console methods
-  ['error', 'warn', 'log', 'info'].forEach((methodName) => {
+  ['error', 'warn', 'log', 'debug', 'info'].forEach((methodName) => {
     const oldMethod = console[methodName].bind(console);
     console[methodName] = (...args) => {
-      Log[methodName](...args);
+      KC3Log[methodName](...args);
       oldMethod(...args);
     };
   });

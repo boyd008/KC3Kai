@@ -73,6 +73,19 @@
 				"type": "check"
 			},
 			{
+				"id": "hoursToKeepLogs",
+				"name": "SettingsLogKeepDuration",
+				"type" : "small_text",
+				"bound" : {
+					"min" : 0,
+					"type": "Integer"
+				},
+				"options": {
+					"label": "hours",
+					"tooltip": "SettingsLogKeepDurationTip"
+				}
+			},
+			{
 				"id": "updateNotification",
 				"name": "SettingsUpdateNotification",
 				"type": "radio",

@@ -410,8 +410,11 @@ Uses Dexie.js third-party plugin on the assets directory
 			this.con.pvp.add(data).then(callback);
 		},
 
-		Log :function (data){
-			return this.con.logs.add(data);
+		Log :function (data, { expireAt }){
+			return this.con.logs
+				.where('timestamp').belowOrEqual(expireAt)
+				.delete()
+				.then(() => { return this.con.logs.add(data); });
 		},
 		
 		/* [GET] Retrive logs from Local DB

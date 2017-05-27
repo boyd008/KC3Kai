@@ -30,6 +30,7 @@ Retreives when needed to apply on components
 				updateNotification	: 2,
 				dataSyncNotification	: false,
 				chromeSyncQuests	: false,
+				hoursToKeepLogs : 72,
 
 				showCatBombs		: true,
 				showApiError		: true,

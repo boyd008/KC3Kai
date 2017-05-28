@@ -4,8 +4,6 @@
   KC3StrategyTabs.logger = new KC3StrategyTab('logger');
 
   KC3StrategyTabs.logger.definition = {
-    tabSelf: KC3StrategyTabs.logger,
-
     ITEMS_PER_PAGE: 20,
     VISIBLE_PAGES: 9,
 
@@ -17,9 +15,9 @@
         error: true,
       },
       contexts: {
-        Background: true,
+        'Background': true,
         'Strategy Room': true,
-        Devtools: true,
+        'Devtools': true,
         'Content Script': true,
       },
     },
@@ -63,12 +61,10 @@
     // -----------------------[ TOGGLE STACK TRACE ]------------------------ //
 
     initStackToggle() {
-      $('.log_list').on('click', '.log_entry', ({ currentTarget }) => {
-        const stack = $(currentTarget).children('.data');
-        if (stack.is(':visible')) {
-          stack.fadeOut();
-        } else {
-          stack.fadeIn();
+      $('.log_list').on('click', '.log_entry .summary', ({ currentTarget }) => {
+        if($(currentTarget).hasClass('hover')) {
+          $(currentTarget).parent().children('.data').slideToggle(50);
+          $(currentTarget).parent().children('.stack').slideToggle(50);
         }
       });
     },
@@ -217,21 +213,17 @@
       error: {
         create(spec) {
           const { renderLogEntry, elementFactory } = KC3StrategyTabs.logger.definition;
-          const { formatStack } = elementFactory.error;
-
+          const { formatStack } = elementFactory;
           const { stack, data } = spec;
-          renderLogEntry($.extend(spec, { data: [formatStack(stack)].concat(data) }));
-        },
-        // Remove the chrome-extension prefix from the stack trace to save space
-        formatStack(stack) {
-          return (stack || '')
-            .replace(/chrome-extension:\/\/[^/]+\//g, 'src/');
+          renderLogEntry($.extend(spec, { stack: formatStack(stack) }));
         },
       },
       warn: {
         create(spec) {
-          const { renderLogEntry } = KC3StrategyTabs.logger.definition;
-          renderLogEntry(spec);
+          const { renderLogEntry, elementFactory } = KC3StrategyTabs.logger.definition;
+          const { formatStack } = elementFactory;
+          const { stack, data } = spec;
+          renderLogEntry($.extend(spec, { stack: formatStack(stack) }));
         },
       },
       log: {
@@ -246,35 +238,35 @@
           renderLogEntry(spec);
         },
       },
+      // Remove the chrome-extension prefix from the stack trace to save space
+      formatStack(stack) {
+        return (stack || '')
+          .replace(/chrome-extension:\/\/[^/]+\//g, 'src/');
+      },
       dateSeparator: {
         create({ timestamp }) {
-          const { formatDate } = KC3StrategyTabs.logger.definition.elementFactory.dateSeparator;
           const { createEntry, defineEntryProps } = KC3StrategyTabs.logger.definition;
-
           const entry = createEntry('date_separator');
-          defineEntryProps(entry, { date: formatDate(timestamp) });
-        },
-        formatDate(timestamp) {
-          // toISOString() always outputs in UTC, so we need to convert manually
-          const offset = new Date(timestamp).getTimezoneOffset() * 60 * 1000;
-          return new Date(timestamp - offset).toISOString().slice(0, 10);
+          defineEntryProps(entry, { date: new Date(timestamp).format('isoDate') });
         },
       },
     },
 
-    renderLogEntry({ type, timestamp, message, data, context }) {
+    renderLogEntry({ type, timestamp, message, data, source, context, stack }) {
       const { formatTimestamp, createEntry, setEntryBackground, defineEntryProps,
-        defineEntryDataArray } = KC3StrategyTabs.logger.definition;
+        defineEntryDataArray, defineEntryStack } = KC3StrategyTabs.logger.definition;
 
       const entry = createEntry('log_entry');
       setEntryBackground(entry, type);
-      defineEntryProps(entry, { timestamp: formatTimestamp(timestamp), message, context });
+      defineEntryProps(entry, {
+        timestamp: new Date(timestamp).format('isoTime'),
+        message,
+        dataline: data.join(' ').substr(0, 72),
+        source,
+        context
+      });
       defineEntryDataArray(entry, data);
-    },
-
-    // Output timestamp in the following format: HH:MM:SS (24-hour format, local time)
-    formatTimestamp(timestamp) {
-      return new Date(timestamp).toTimeString().slice(0, 8);
+      defineEntryStack(entry, stack);
     },
 
     createEntry(classId) {
@@ -303,8 +295,18 @@
     },
 
     defineEntryProps(entry, props) {
+      const shortenSource = (
+        s => s.substring(s.lastIndexOf('/') + 1, ((s.lastIndexOf(':') + 1) || (s.length + 1)) - 1)
+      );
       Object.keys(props).forEach((key) => {
-        $(`.${key}`, entry).text(props[key]);
+        if (key === 'source') {
+          const sourceFull = props[key] || '';
+          const sourceShort = shortenSource(sourceFull);
+          $(`.${key}`, entry).text(sourceShort || 'n/a')
+            .attr('title', sourceFull);
+        } else {
+          $(`.${key}`, entry).text(props[key]);
+        }
       });
     },
 
@@ -316,11 +318,19 @@
         }
         $(document.createElement('div')).text(d).appendTo(dataAnchor);
       });
-      dataAnchor.parent().css('cursor', data.length > 0 ? 'pointer' : 'auto');
+      $('.summary', dataAnchor.parent()).toggleClass('hover', data.length > 0);
+    },
+
+    defineEntryStack(entry, stack) {
+      const stackAnchor = $('.stack', entry);
+      if (stack) {
+        $(document.createElement('div')).text(stack).appendTo(stackAnchor);
+        $('.summary', stackAnchor.parent()).addClass('hover');
+     }
     },
 
     clearEntries() {
-      $('.tab_logger .log_list').html('');
+      $('.tab_logger .log_list').empty();
     },
 
     logError(error) {

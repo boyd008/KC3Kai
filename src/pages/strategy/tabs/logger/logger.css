@@ -47,6 +47,8 @@
 
 .tab_logger .log_entry .data {
   display: none;
+  font-family: monospace;
+  font-size: 12px;
 }
 .tab_logger .log_entry .data hr {
   margin-bottom: 5px !important;
@@ -58,13 +60,70 @@
   word-wrap: break-word;
 }
 
+.tab_logger .log_entry .stack {
+  display: none;
+  color: #f14;
+  font-family: monospace;
+  font-size: 12px;
+  text-indent: 1em;
+}
+.tab_logger .log_entry .stack hr {
+  margin-bottom: 5px !important;
+  margin-top: 5px !important;
+  border-top: 1px solid #fff !important;
+}
+.tab_logger .log_entry .stack div {
+  white-space: pre-wrap;
+  word-wrap: break-word;
+}
+
 .tab_logger .log_entry {
   border-radius: 8px;
   margin: 0px 0px 4px 0px;
   padding: 2px 10px;
 }
 
-.tab_logger .log_entry .context {
+.tab_logger .log_entry .summary {
+  font-size: 12px;
+  line-height: 24px;
+  height: 24px;
+}
+.tab_logger .log_entry .summary div {
+  float: left;
+}
+.tab_logger .log_entry .summary .time {
+  line-height: 24px;
+  color: #888;
+  margin-right: 4px;
+}
+.tab_logger .log_entry .summary .msg {
+  font-family: monospace;
+  line-height: 24px;
+  width: 480px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.tab_logger .log_entry .summary .msg .dataline {
+  color: #666;
+}
+.tab_logger .log_entry .summary .source {
+  color: #45b;
+  width: 116px;
+  line-height: 12px;
+  font-size: 10px;
+  overflow: hidden;
+  text-align: right;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  direction: rtl;
+}
+.tab_logger .log_entry .summary .context {
+  color: #444;
+  width: 100px;
+  line-height: 12px;
+  font-size: 10px;
+  text-align: right;
   float: right;
 }
 

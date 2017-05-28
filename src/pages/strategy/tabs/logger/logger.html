@@ -1,5 +1,5 @@
 <div class="page_title">
-	Error Logs
+	Console Logs
 	<div class="page_help_btn hover"><span>?</span> Help Topics</div>
 </div>
 
@@ -27,13 +27,16 @@
   <label class="entry_filter">
       <input type="checkbox" />
       <span class="filter_label text-capitalize"></span>
-    <div class="clear"></div>
+      <div class="clear"></div>
   </label>
 
   <div class="log_entry">
-    <div>
-      [<span class="timestamp"></span>] <span class="message"></span>
-      <span class="context"></span>
+    <div class="summary">
+      <div class="time">[<span class="timestamp"></span>]</div>
+      <div class="msg"><span class="message"></span> <span class="dataline"></span></div>
+      <div class="source"></div>
+      <div class="context"></div>
+      <div class="clear"></div>
     </div>
     <div class="data"></div>
     <div class="stack"></div>

@@ -17,7 +17,7 @@
 
   Log.sendMessage = (message) => {
     return new Promise((resolve, reject) => {
-      $.extend(message, { identifier: 'kc3_service' });
+      $.extend(message, { identifier: 'kc3_log' });
       chrome.runtime.sendMessage(message, (response) => {
         if (chrome.runtime.lastError) {
           reject(chrome.runtime.lastError);

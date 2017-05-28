@@ -440,13 +440,6 @@ See Manifest File [manifest.json] under "background" > "scripts"
 				kc3version: chrome.runtime.getManifest().version
 			});
 		},
-
-		saveLogToDb(request, sender, response) {
-			KC3Log.saveToDb(request.log)
-				.then((result) => { response({ result }); })
-				// manually JSON-ify error
-				.catch(({ name, message, stack }) => { response({ error: { name, message, stack } }); });
-		},
 		
 		/* QUEST SYNC
 		Facilitate remote invocation of background methods

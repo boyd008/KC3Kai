@@ -10,8 +10,8 @@
     VISIBLE_PAGES: 9,
 
     visibleLogTypes: {
-      info: true,
       log: true,
+      info: true,
       warn: true,
       error: true,
     },

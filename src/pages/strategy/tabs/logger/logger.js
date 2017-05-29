@@ -294,10 +294,7 @@
         if (index !== 0) {
           dataAnchor.append('<hr />');
         }
-        $(document.createElement('div'))
-          .text(d)
-          .css({ 'word-wrap': 'break-word', 'white-space': 'normal' })
-          .appendTo(dataAnchor);
+        $(document.createElement('div')).text(d).appendTo(dataAnchor);
       });
       dataAnchor.parent().css('cursor', data.length > 0 ? 'pointer' : 'auto');
     },

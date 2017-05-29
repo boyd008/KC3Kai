@@ -46,13 +46,16 @@
 --------------------------------*/
 
 .tab_logger .log_entry .data {
-  white-space: pre;
   display: none;
 }
 .tab_logger .log_entry .data hr {
   margin-bottom: 5px !important;
   margin-top: 5px !important;
   border-top: 1px solid #fff !important;
+}
+.tab_logger .log_entry .data div {
+  white-space: pre-wrap;
+  word-wrap: break-word;
 }
 
 .tab_logger .log_entry {

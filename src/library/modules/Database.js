@@ -880,17 +880,23 @@ Uses Dexie.js third-party plugin on the assets directory
 				.catch(callbackFail || function(e){console.error(e.stack);});
 		},
 
-		count_log_entries :function (typesToShow) {
-			return this.con.logs
-				.filter(({ type }) => typesToShow.includes(type))
-				.count();
+		count_log_entries :function (filters) {
+			return filters.reduce((tableOrCollection, filter, index) => {
+				if (index === 0) {
+					// we have a Table
+					return tableOrCollection.filter(filter);
+				}
+				// otherwise we have a Collection
+				return tableOrCollection.and(filter);
+			}, this.con.logs).count();
 		},
 
-		get_log_entries :function ({ pageNumber, itemsPerPage, typesToShow }) {
-			return this.con.logs
-				.orderBy('timestamp')
-				.reverse()
-				.and(({ type }) => typesToShow.includes(type))
+		get_log_entries :function ({ pageNumber, itemsPerPage, filters }) {
+			const collection = this.con.logs.orderBy('timestamp').reverse();
+
+			const filteredCollection = filters.reduce((result, filter) => result.and(filter), collection);
+
+			return filteredCollection
 				.offset((pageNumber - 1) * itemsPerPage)
 				.limit(itemsPerPage)
 				.toArray();

@@ -2,18 +2,25 @@
 QUnit.module('pages > strategy > tabs > logger', function () {
   const logger = KC3StrategyTabs.logger.definition;
 
-  QUnit.module('getVisibleEntryTypes', {
-    beforeEach() { this.subject = logger.getVisibleEntryTypes; },
+  QUnit.module('filters > logTypes', {
+    beforeEach() { this.subject = logger.filterFuncs.logTypes; },
   }, function () {
-    QUnit.test('return as array', function (assert) {
-      logger.visibleLogTypes = { info: false, log: false, warn: true, error: true };
+    QUnit.test('check type is set to visible', function (assert) {
+      logger.filterState.logTypes = { yellow: true, purple: false };
 
-      const result = this.subject();
+      assert.ok(this.subject({ type: 'yellow' }));
+      assert.notOk(this.subject({ type: 'purple' }));
+    });
+  });
 
-      assert.notOk(result.includes('info'));
-      assert.notOk(result.includes('log'));
-      assert.ok(result.includes('warn'));
-      assert.ok(result.includes('error'));
+  QUnit.module('filters > contexts', {
+    beforeEach() { this.subject = logger.filterFuncs.contexts; },
+  }, function () {
+    QUnit.test('check context is set to visible', function (assert) {
+      logger.filterState.contexts = { banana: true, potato: false };
+
+      assert.ok(this.subject({ context: 'banana' }));
+      assert.notOk(this.subject({ context: 'potato' }));
     });
   });
 

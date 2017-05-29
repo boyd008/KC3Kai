@@ -9,11 +9,30 @@
     ITEMS_PER_PAGE: 20,
     VISIBLE_PAGES: 9,
 
-    visibleLogTypes: {
-      log: true,
-      info: true,
-      warn: true,
-      error: true,
+    filterState: {
+      logTypes: {
+        log: true,
+        info: true,
+        warn: true,
+        error: true,
+      },
+      contexts: {
+        Background: true,
+        'Strategy Room': true,
+        Devtools: true,
+        'Content Script': true,
+      },
+    },
+
+    filterFuncs: {
+      logTypes({ type }) {
+        const { logTypes: isVisible } = KC3StrategyTabs.logger.definition.filterState;
+        return isVisible[type];
+      },
+      contexts({ context }) {
+        const { contexts: isVisible } = KC3StrategyTabs.logger.definition.filterState;
+        return isVisible[context];
+      },
     },
 
 
@@ -26,12 +45,13 @@
     Places data onto the interface from scratch.
     ---------------------------------*/
     execute() {
-      const { initStackToggle, initLogClearButton, initTypeFilters, initPagination, logError } =
+      const { initStackToggle, initLogClearButton, initFilter, initPagination, logError } =
         KC3StrategyTabs.logger.definition;
       return Promise.resolve()
         .then(initStackToggle)
         .then(initLogClearButton)
-        .then(initTypeFilters)
+        .then(initFilter.bind(null, 'logTypes'))
+        .then(initFilter.bind(null, 'contexts'))
         .then(initPagination)
         .catch(logError);
     },
@@ -62,31 +82,31 @@
       });
     },
 
-    // --------------------------[ TYPE FILTERS ]--------------------------- //
+    // ------------------------[ FILTER RENDERING ]------------------------- //
 
-    initTypeFilters() {
-      const { visibleLogTypes, renderFilter, initFilterStateListener } =
+    initFilter(filterType) {
+      const { renderFilter, initFilterStateListener, filterState } =
         KC3StrategyTabs.logger.definition;
-      Object.keys(visibleLogTypes).forEach((key) => {
-        renderFilter(key, visibleLogTypes[key]);
+      Object.keys(filterState[filterType]).forEach((key) => {
+        renderFilter({ filterType, filterLabel: key, isVisible: filterState[filterType][key] });
       });
-      initFilterStateListener();
+      initFilterStateListener(filterType);
     },
 
-    renderFilter(filterType, isVisible) {
-      const filter = $('.tab_logger .factory .type_filter').clone();
+    renderFilter({ filterType, filterLabel, isVisible }) {
+      const filter = $('.tab_logger .factory .entry_filter').clone();
 
-      filter.children('.filter_label').html(filterType);
-      filter.children('input').attr('checked', isVisible).attr('name', filterType);
+      filter.children('.filter_label').html(filterLabel);
+      filter.children('input').attr('checked', isVisible).attr('name', filterLabel);
 
-      $('.tab_logger .type_filters').append(filter);
+      $(`.tab_logger [data-filter-type="${filterType}"`).append(filter);
     },
 
-    initFilterStateListener() {
-      const { visibleLogTypes, initPagination } = KC3StrategyTabs.logger.definition;
-      $('.tab_logger .type_filter input:checkbox').change(function () {
+    initFilterStateListener(filterType) {
+      const { initPagination, filterState } = KC3StrategyTabs.logger.definition;
+      $(`.tab_logger [data-filter-type="${filterType}"] .entry_filter input:checkbox`).change(function () {
         // update filter state
-        visibleLogTypes[this.name] = this.checked;
+        filterState[filterType][this.name] = this.checked;
 
         // reload log list
         initPagination();
@@ -130,26 +150,26 @@
     // ----------------------------[ DATABASE ]----------------------------- //
 
     getEntryCount() {
-      const { getVisibleEntryTypes } = KC3StrategyTabs.logger.definition;
-      return KC3Database.count_log_entries(getVisibleEntryTypes());
+      const { composeFilters } = KC3StrategyTabs.logger.definition;
+      return KC3Database.count_log_entries(composeFilters());
     },
 
     getLogEntries(pageNumber) {
-      const { ITEMS_PER_PAGE, getVisibleEntryTypes } = KC3StrategyTabs.logger.definition;
+      const { ITEMS_PER_PAGE, composeFilters } = KC3StrategyTabs.logger.definition;
       return KC3Database.get_log_entries({
         pageNumber,
         itemsPerPage: ITEMS_PER_PAGE,
-        typesToShow: getVisibleEntryTypes(),
+        filters: composeFilters(),
       });
-    },
-
-    getVisibleEntryTypes() {
-      const { visibleLogTypes } = KC3StrategyTabs.logger.definition;
-      return Object.keys(visibleLogTypes).filter(key => visibleLogTypes[key]);
     },
 
     clearLogs() {
       return KC3Database.delete_log_entries();
+    },
+
+    composeFilters() {
+      const { filterFuncs } = KC3StrategyTabs.logger.definition;
+      return Object.keys(filterFuncs).map(key => filterFuncs[key]);
     },
 
     // -------------------------[ SPLIT BY DATES ]-------------------------- //

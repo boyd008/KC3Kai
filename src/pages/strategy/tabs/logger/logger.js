@@ -299,6 +299,7 @@
           .css({ 'word-wrap': 'break-word', 'white-space': 'normal' })
           .appendTo(dataAnchor);
       });
+      dataAnchor.parent().css('cursor', data.length > 0 ? 'pointer' : 'auto');
     },
 
     clearEntries() {

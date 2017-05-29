@@ -881,15 +881,19 @@ Uses Dexie.js third-party plugin on the assets directory
 		},
 
 		count_log_entries :function (typesToShow) {
-			return this.con.logs.where('type').anyOf(typesToShow).count();
+			return this.con.logs
+				.filter(({ type }) => typesToShow.includes(type))
+				.count();
 		},
 
 		get_log_entries :function ({ pageNumber, itemsPerPage, typesToShow }) {
 			return this.con.logs
-				.where('type').anyOf(typesToShow)
-				.offset((pageNumber - 1) * itemsPerPage).limit(itemsPerPage)
+				.orderBy('timestamp')
 				.reverse()
-				.sortBy('timestamp');
+				.and(({ type }) => typesToShow.includes(type))
+				.offset((pageNumber - 1) * itemsPerPage)
+				.limit(itemsPerPage)
+				.toArray();
 		},
 
 		delete_log_entries :function () {

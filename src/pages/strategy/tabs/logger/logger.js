@@ -204,7 +204,7 @@
         },
         // Remove the chrome-extension prefix from the stack trace to save space
         formatStack(stack) {
-          return stack
+          return (stack || '')
             .replace(/chrome-extension:\/\/[^/]+\//g, 'src/');
         },
       },

@@ -65,6 +65,12 @@ QUnit.module('pages > strategy > tabs > logger', function () {
   QUnit.module('elementFactory > error > formatStack', {
     beforeEach() { this.subject = logger.elementFactory.error.formatStack; },
   }, function () {
+    QUnit.test('undefined stack', function (assert) {
+      const result = this.subject();
+
+      assert.equal(result, '');
+    });
+
     QUnit.test('replace chrome extension id', function (assert) {
       const stack = `at loadLogEntries (chrome-extension://hgnaklcechmjlpaeamgcnagnhpjhllne/pages/strategy/tabs/logger/logger.js:56:18)
 at Object.execute (chrome-extension://hgnaklcechmjlpaeamgcnagnhpjhllne/pages/strategy/tabs/logger/logger.js:30:21)

@@ -119,10 +119,10 @@
       const { clearEntries, getLogEntries, splitByDate, renderElement } =
         KC3StrategyTabs.logger.definition;
       return Promise.resolve()
-        .then(clearEntries)
         .then(getLogEntries.bind(null, pageNum))
         .then(splitByDate)
         .then((elements) => {
+          clearEntries();
           elements.forEach(renderElement);
         });
     },
